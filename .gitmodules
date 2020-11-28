@@ -1,3 +1,6 @@
 [submodule "SpotifyDemo/3rdparty/vcpkg"]
 	path = SpotifyDemo/3rdparty/vcpkg
 	url = https://github.com/microsoft/vcpkg
+[submodule "SpotifyDemo/3rdparty/cpp-base64"]
+	path = SpotifyDemo/3rdparty/cpp-base64
+	url = https://github.com/ReneNyffenegger/cpp-base64
