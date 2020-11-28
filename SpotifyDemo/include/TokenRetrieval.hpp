@@ -14,99 +14,99 @@
 
 namespace Manager
 {
-	template<typename Str = std::string>
-	class TokenRetrieval
-	{
-	public:
-		TokenRetrieval() = default;
-		TokenRetrieval(Models::ClientInformation<Str> &info) :
-			client_information(std::move(info))
-		{
-		}
-		TokenRetrieval(Models::ClientInformation<Str> &&info) :
-			client_information(info)
-		{
-		}
+    template<typename Str = std::string>
+    class TokenRetrieval
+    {
+    public:
+        TokenRetrieval() = default;
+        TokenRetrieval(Models::ClientInformation<Str> &info) :
+            client_information(std::move(info))
+        {
+        }
+        TokenRetrieval(Models::ClientInformation<Str> &&info) :
+            client_information(info)
+        {
+        }
 
-		template<typename TokResp>
-		auto retrieve_token()
-		{
-			if (this->client_information.is_empty()) {
-				return TokResp();
-			}
+        template<typename TokResp>
+        auto retrieve_token()
+        {
+            if (this->client_information.is_empty()) {
+                return TokResp();
+            }
 
-			auto token = make_call<TokResp>();
-
-
-			return (token.is_empty()) ? TokResp() : token;
-		}
+            auto token = make_call<TokResp>();
 
 
-	private:
-		template<typename TokResp>
-		auto make_call()
-		{
-			TokResp resp;
-
-			Str authorization("Basic ");
-			authorization.append(encoded_authorization());
+            return (token.is_empty()) ? TokResp() : token;
+        }
 
 
-			const auto uri = construct_uri(spotify_uri(), spotify_token_endpoint());
-			auto r = cpr::Post(cpr::Url{ uri },
-				cpr::Parameters{ {"grant_type", "client_credentials" }},
-				cpr::Header{ {"Authorization", authorization.c_str()} }
-			);
+    private:
+        template<typename TokResp>
+        auto make_call()
+        {
+            TokResp resp;
 
-			if (r.status_code == 200) {
-				auto token = nlohmann::json::parse(r.text);
-				resp.access_token = token["access_token"].get<Str>();
-				resp.token_type = token["token_type"].get<Str>();
-				resp.expires_in = token["expires_in"].get<int>();
-				resp.scope = token["scope"].get<Str>();
-			}
+            Str authorization("Basic ");
+            authorization.append(encoded_authorization());
 
 
-			return resp;
-		}
+            const auto uri = construct_uri(spotify_uri(), spotify_token_endpoint());
+            auto r = cpr::Post(cpr::Url{ uri },
+                cpr::Parameters{ {"grant_type", "client_credentials" }},
+                cpr::Header{ {"Authorization", authorization.c_str()} }
+            );
 
-		auto encoded_authorization()
-		{
-			Str unencoded(client_information.client_id);
-			unencoded.append(":");
-			unencoded.append(client_information.client_secret);
+            if (r.status_code == 200) {
+                auto token = nlohmann::json::parse(r.text);
+                resp.access_token = token["access_token"].get<Str>();
+                resp.token_type = token["token_type"].get<Str>();
+                resp.expires_in = token["expires_in"].get<int>();
+                resp.scope = token["scope"].get<Str>();
+            }
 
-			std::vector<char> v(unencoded.begin(), unencoded.end());
 
-			return cppcodec::base64_rfc4648::encode(v);
-		}
+            return resp;
+        }
 
-		template<typename Ch = char>
-		auto construct_uri(Ch *base, Ch *endpoint)
-		{
-			Str uri(base);
+        auto encoded_authorization()
+        {
+            Str unencoded(client_information.client_id);
+            unencoded.append(":");
+            unencoded.append(client_information.client_secret);
 
-			if (uri.at(uri.size() - 1) != '/') {
-				uri.append("/");
-			}
+            std::vector<char> v(unencoded.begin(), unencoded.end());
 
-			uri.append(endpoint);
+            return cppcodec::base64_rfc4648::encode(v);
+        }
 
-			return uri;
-		}
+        template<typename Ch = char>
+        auto construct_uri(Ch *base, Ch *endpoint)
+        {
+            Str uri(base);
 
-		auto constexpr spotify_uri() noexcept
-		{
-			return "https://accounts.spotify.com";
-		}
+            if (uri.at(uri.size() - 1) != '/') {
+                uri.append("/");
+            }
 
-		auto constexpr spotify_token_endpoint() noexcept
-		{
-			return "api/token";
-		}
+            uri.append(endpoint);
 
-		Models::ClientInformation<Str> client_information;
-	};
+            return uri;
+        }
+
+        auto constexpr spotify_uri() noexcept
+        {
+            return "https://accounts.spotify.com";
+        }
+
+        auto constexpr spotify_token_endpoint() noexcept
+        {
+            return "api/token";
+        }
+
+        Models::ClientInformation<Str> client_information;
+    };
 
 }
 

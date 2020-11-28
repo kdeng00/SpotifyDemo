@@ -14,16 +14,16 @@ find_path (CPPCODEC_INCLUDE_DIRS "cppcodec/base32_crockford.hpp")
 
 
 set (SOURCES
-	"${CMAKE_CURRENT_SOURCE_DIR}/src/SpotifyDemo.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/SpotifyDemo.cpp"
 )
 
 set (SD_INCLUDE_DIR
 
-	"${CMAKE_CURRENT_SOURCE_DIR}/include"
-	)
+    "${CMAKE_CURRENT_SOURCE_DIR}/include"
+    )
 
 set (HEADERS
-	"${SD_INCLUDE_DIR}/Models.h"
+    "${SD_INCLUDE_DIR}/Models.h"
 )
 
 include_directories ("${SD_INCLUDE_DIR}")
