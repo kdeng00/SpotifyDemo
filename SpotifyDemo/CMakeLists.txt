@@ -1,7 +1,7 @@
 ﻿# CMakeList.txt : CMake project for SpotifyDemo, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 3.8)
+# cmake_minimum_required (VERSION 3.8)
 
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_STANDARD 14)
@@ -33,5 +33,5 @@ configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/client_information.json" "${CMAKE_B
 # Add source to this project's executable.
 add_executable (SpotifyDemo ${SOURCES})
 
-target_link_libraries (SpotifyDemo PRIVATE nlohmann_json nlohmann_json::nlohmann_json cpr)
+target_link_libraries (SpotifyDemo PRIVATE nlohmann_json nlohmann_json::nlohmann_json cpr::cpr)
 target_include_directories (SpotifyDemo PRIVATE ${CPPCODEC_INCLUDE_DIRS})
