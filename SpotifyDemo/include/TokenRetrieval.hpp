@@ -37,8 +37,13 @@ namespace Manager
 
             auto token = make_call<TokResp>();
 
+            if (token.is_empty())
+            {
+                return TokResp();
+            }
 
-            return (token.is_empty()) ? TokResp() : token;
+
+            return token;
         }
 
 
@@ -63,7 +68,7 @@ namespace Manager
                 resp.access_token = token["access_token"].get<Str>();
                 resp.token_type = token["token_type"].get<Str>();
                 resp.expires_in = token["expires_in"].get<int>();
-                resp.scope = token["scope"].get<Str>();
+                // resp.scope = token["scope"].get<Str>();
             }
 
 

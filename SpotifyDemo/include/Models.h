@@ -6,13 +6,28 @@
 
 namespace Models
 {
+    template<typename Str = std::string>
+    class SpotifyVendorBase
+    {
+    protected:
+        void vendorInitialize()
+        {
+            disclaimer.assign("By Spotify");
+        }
+
+        Str disclaimer;
+    };
+
     template<typename Str = std::string,
         typename Num = int,
         typename Dur = long>
-    class Song
+    class Song : public SpotifyVendorBase<Str>
     {
     public:
-        Song() = default;
+        Song()
+        {
+            vendorInitialize();
+        }
 
         Str title;
         Str artist;
@@ -23,10 +38,13 @@ namespace Models
 
     template<typename Str = std::string,
         typename Num = int>
-    class Album
+    class Album : public SpotifyVendorBase<Str>
     {
     public:
-        Album() = default;
+        Album()
+        {
+            vendorInitialize();
+        }
 
         Str title;
         Str released;
@@ -61,14 +79,17 @@ namespace Models
     class TokenResp
     {
     public:
-        auto is_empty()
+        auto is_empty() noexcept
         {
-            return this->access_token.empty();
+            auto result = this->access_token.empty();
+            return result;
         }
 
         Str access_token;
         Str token_type;
         Num expires_in;
+        // Not being used as of 2022-01-21
+        [[deprecated("This field will not be used")]]
         Str scope;
     };
 }
